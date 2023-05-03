@@ -15,6 +15,7 @@ class Tasks(models.Model):
       ("Pr", "Project"),
       ("S", "Support"),
    ]
+   id = models.AutoField(primary_key=True)
    name = models.CharField(max_length=150)
    description = models.TextField(null = True)
    startdate = models.DateField(null=True)
