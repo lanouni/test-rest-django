@@ -9,10 +9,11 @@ class Person(models.Model):
         ("H", "Homme"),
         ("F", "Female")
     ]
-
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50, )
     lastName = models.CharField(max_length=50, )
     email = models.CharField(max_length=32, unique=True)
+    password = models.CharField(max_length=32, blank=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICE)
     date_arrivee = models.DateField(null=True)
     date_depart = models.DateField(null=True)

@@ -4,6 +4,7 @@ from .serializers import *
 from .models import *
 from tasks.models import *
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 
 # Create your views here.
@@ -64,3 +65,12 @@ class TasksListWithTrackByPerson(generics.ListAPIView):
     #def get_serializer(self, *args, **kwargs):
     #    kwargs['person_id'] = int(self.kwargs['person_id'])
     #    return super().get_serializer(*args, **kwargs)
+
+class PersonLoginView(APIView):
+    serializer_class = PersonLoginSerializer
+    allowed_methods = ['POST']
+
+    def post(self, request, *args, **kwargs):
+        serializer = PersonLoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data)

@@ -2,6 +2,8 @@ from rest_framework import serializers
 from .models import *
 from  tasks.serializers import TasksSerailizer
 from tasks.models import *
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 class PersonSerializer(serializers.ModelSerializer):
     role_name = serializers.CharField(source='role.name')
@@ -60,3 +62,24 @@ class TaskByPersonSerializer(serializers.ModelSerializer):
     class Meta:
         model = TaskByPerson
         fields = ['id','deleted','task_name','task_id','task_description','task_startDate','task_endDate','task_commentaire','task_sponsor','task_chargeFTE','task_statut','task_type']
+
+
+class PersonLoginSerializer(serializers.Serializer):
+    email = serializers.CharField(max_length=32)
+    password = serializers.CharField(max_length=32)
+
+    def validate(self, attrs):
+        email = attrs.get("email")
+        password = attrs.get("password")
+        person = Person.objects.filter(email=email, password=password).first()
+        if not person:
+            raise serializers.ValidationError("Person not found")
+        if person.deleted:
+            raise serializers.ValidationError("Person is deleted")
+        refresh = RefreshToken.for_user(person)
+        token = str(refresh.access_token)
+        attrs['token'] = token
+        attrs['person'] = person
+        print(attrs['token'])
+        return attrs
+
